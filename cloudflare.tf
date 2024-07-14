@@ -77,13 +77,14 @@ resource "cloudflare_worker_script" "project_script" {
     name = "GCP_USERINFO_CREDENTIALS"
     text = var.GCP_USERINFO_CREDENTIALS
   }
+
+  queue_binding {
+    binding = "CRON_PROCESSOR"
+    queue   = cloudflare_queue.cron_processor.id
+  }
 }
 
-# output "api_gateway_namespace_id" {
-#   value = cloudflare_workers_kv_namespace.mapping.id
-# }
-
-# resource "cloudflare_d1_database" "project_db" {
-#   account_id = var.cloudflare_account_id
-#   name       = "database"
-# }
+resource "cloudflare_queue" "cron_processor" {
+  account_id = var.cloudflare_account_id
+  name       = "cron_processor"
+}
